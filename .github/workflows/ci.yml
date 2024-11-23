@@ -1,42 +1,46 @@
-name: CI Pipeline
+name: C++ CI with Google Test
 
-# Trigger the workflow on push or pull requests to specific branches
 on:
   push:
     branches:
-      - main  # Trigger CI on push to main
+      - main
   pull_request:
     branches:
-      - main  # Trigger CI on PRs targeting main
+      - main
 
-# Define the jobs in the workflow
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest  # Use a GitHub-hosted Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code from the repository
-      - name: Checkout Code
+      # Step 1: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up the environment (e.g., Python, Node.js, or any other language)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+      # Step 2: Install build tools and dependencies
+      - name: Install build tools and Google Test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
 
-      # Step 3: Install dependencies
-      - name: Install Dependencies
-        run: npm install
+      # Step 3: Configure Google Test
+      - name: Setup Google Test
+        run: |
+          git clone https://github.com/google/googletest.git
+          mkdir -p googletest/build
+          cd googletest/build
+          cmake ..
+          make
+          sudo make install
 
-      # Step 4: Run tests
-      - name: Run Tests
-        run: npm test
+      # Step 4: Build the project
+      - name: Build C++ Program and Tests
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make
 
-      # Step 5: Lint code
-      - name: Lint Code
-        run: npm run lint
-
-      # Step 6: Build the project (optional)
-      - name: Build Project
-        run: npm run build
+      # Step 5: Run tests
+      - name: Run Google Tests
+        run: ./build/test
