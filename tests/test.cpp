@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "main.cpp"
+#include "../src/math_utils.hpp"
 
 // Test for add function
 TEST(AdditionTest, HandlesPositiveNumbers) {
