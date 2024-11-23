@@ -1,0 +1,42 @@
+name: Benchmarks
+
+on:
+  push:
+    branches:
+      - main  # Run benchmarks on pushes to the main branch
+  pull_request:
+    branches:
+      - main  # Run benchmarks on pull requests targeting main
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest  # Use GitHub-hosted Ubuntu runner
+
+    steps:
+      # Step 1: Check out the code
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up the programming environment (example: Python)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-benchmark
+
+      # Step 4: Run benchmarks
+      - name: Run Benchmarks
+        run: pytest --benchmark-only > benchmark_results.txt
+
+      # Step 5: Upload benchmark results as an artifact
+      - name: Upload Benchmark Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmark-results
+          path: benchmark_results.txt
