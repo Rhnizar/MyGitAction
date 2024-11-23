@@ -38,7 +38,7 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake ..            # Corrected: Use the correct directory for your CMakeLists.txt
+          cmake ../../cmake           # Corrected: Use the correct directory for your CMakeLists.txt
           make
 
       # Step 5: Run tests
